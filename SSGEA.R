@@ -1,8 +1,10 @@
+#Import Libraries
 library(matrixStats)
 library(circlize)
 library(ComplexHeatmap)
 library(data.table)
 
+#Ssgea function
 ssgsea = function(X, gene_sets, alpha = 0.25, scale = T, norm = F, single = T) {
   row_names = rownames(X)
   num_genes = nrow(X)
@@ -52,23 +54,27 @@ ssgsea = function(X, gene_sets, alpha = 0.25, scale = T, norm = F, single = T) {
   colnames(es) = colnames(X)
   return(es)
 }
-
+#Read dataset
 data = readRDS("C:/Users/arkaj/OneDrive/Documents/logCP.rds")
 data[1:5,1:5]
 
 data = as.matrix(data)
+#Import the markers dataset
 gene_set = read.csv("C:/Users/arkaj/OneDrive/Documents/markers2Sep.csv")
 head(gene_set)
 
+#Convert to list
 gene_sets = as.list(as.data.frame(gene_set))
 print("genes set ready")
 
+#Use ssgea function 
 res = ssgsea(data, gene_sets, scale = TRUE, norm = FALSE)
 
-#transpose the res object for viewing purposes
+#transpose the res
 res1 = t(res)
 head(res1)
 
+#Convert to matrix
 mat = as.matrix(res1)
 for(i in 1:nrow(mat))
 { 
@@ -77,4 +83,5 @@ for(i in 1:nrow(mat))
   
 }
 
+#Plot the heatmap
 Heatmap(t(mat),col = colorRamp2(c(-2,0,2),c("green","Purple","orange")))
